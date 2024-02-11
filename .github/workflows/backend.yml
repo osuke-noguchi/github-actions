@@ -3,8 +3,9 @@ name: backend
 on:
   push:
     branches:
-       - main
-       
+      - main
+  schedule:
+
 defaults:
   run:
     working-directory: backend
@@ -48,15 +49,15 @@ jobs:
           key: ${{ secrets.BACKEND_SERVER_SSH_KEY }}
           known_hosts: ${{ secrets.BACKEND_SERVER_KNOWN_HOSTS }}
 
-     - run: rsync -v dist/index.js ${SERVER_USER}@${SERVER_IP}:~/index.js
-       env:
-        SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
-        SERVER_IP: ${{ secrets.BACKEND_SERVER_IP }}
-     - run: ssh ${SERVER_USER}@${SERVER_IP} sudo systemctl restart backend
-       env:
-        SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
-        SERVER_IP: ${{ secrets.BACKEND_SERVER_IP }}
-     - run: ssh ${SERVER_USER}@${SERVER_IP} systemctl status backend
-       env:
-        SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
-        SERVER_IP: ${{ secrets.BACKEND_SERVER_IP }}
+      - run: rsync -v dist/index.js ${SERVER_USER}@${SERVER_IP}:~/index.js
+        env:
+          SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
+          SERVER_IP: ${{ secrets.BACKEND_SERVER_IP }}
+      - run: ssh ${SERVER_USER}@${SERVER_IP} sudo systemctl restart backend
+        env:
+          SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
+          SERVER_IP: ${{ secrets.BACKEND_SERVER_IP }}
+      - run: ssh ${SERVER_USER}@${SERVER_IP} systemctl status backend
+        env:
+          SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
+          SERVER_IP: ${{ secrets.BACKEND_SERVER_IP }}
