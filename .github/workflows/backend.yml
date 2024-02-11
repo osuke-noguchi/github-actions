@@ -53,10 +53,10 @@ jobs:
         SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
         SERVER_IP: ${{ secrets.BACKEND_SERVER_IP }}
      - run: ssh ${SERVER_USER}@${SERVER_IP} sudo systemctl restart backend
-     env:
+       env:
         SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
         SERVER_IP: ${{ secrets.BACKEND_SERVER_IP }}
      - run: ssh ${SERVER_USER}@${SERVER_IP} systemctl status backend
-     env:
+       env:
         SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
         SERVER_IP: ${{ secrets.BACKEND_SERVER_IP }}
