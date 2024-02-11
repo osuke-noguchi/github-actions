@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          
+
       - run: npm ci
       - run: npm run test -- --coverage
       - run: npm run build
@@ -37,3 +37,26 @@ jobs:
           name: dist
           path: backend/dist/index.js
           retention-days: 5
+          
+  deploy:
+    needs: build
+    if: github.event == 'push'
+    runs-on: ubunt-latest
+    steps:
+      - uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.BACKEND_SERVER_SSH_KEY }}
+          known_hosts: ${{ secrets.BACKEND_SERVER_KNOWN_HOSTS }}
+
+     - run: rsync -v dist/index.js ${SERVER_USER}@${SERVER_IP}:~/index.js
+       env:
+        SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
+        SERVER_IP: ${{ secrets.BACKEND_SERVE_IP }}
+     - run: ssh ${SERVER_USER}@${SERVER_IP} sudo systemctl restart backend
+     env:
+        SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
+        SERVER_IP: ${{ secrets.BACKEND_SERVE_IP }}
+     - run: ssh ${SERVER_USER}@${SERVER_IP} systemctl status backend 
+     env:
+        SERVER_USER: ${{ secrets.BACKEND_SERVER_USER }}
+        SERVER_IP: ${{ secrets.BACKEND_SERVE_IP }}
